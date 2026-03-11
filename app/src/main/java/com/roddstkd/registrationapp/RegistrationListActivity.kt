@@ -1,6 +1,8 @@
 package com.roddstkd.registrationapp
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ class RegistrationListActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var titleText: TextView
+    private lateinit var progressBar: ProgressBar
     private val adapter = RegistrationAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +25,7 @@ class RegistrationListActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         titleText = findViewById(R.id.tvTitle)
+        progressBar = findViewById(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -46,14 +50,17 @@ class RegistrationListActivity : AppCompatActivity() {
     }
 
     private fun loadAll() {
+        showLoading(true)
         RetrofitClient.api.getRegistrations().enqueue(registrationCallback())
     }
 
     private fun loadByClub(club: String) {
+        showLoading(true)
         RetrofitClient.api.getByClub(club = club).enqueue(registrationCallback())
     }
 
     private fun loadByClass(className: String) {
+        showLoading(true)
         RetrofitClient.api.getByClass(className = className).enqueue(registrationCallback())
     }
 
@@ -63,8 +70,17 @@ class RegistrationListActivity : AppCompatActivity() {
                 call: Call<List<Registration>>,
                 response: Response<List<Registration>>
             ) {
+                showLoading(false)
                 if (response.isSuccessful) {
-                    adapter.submitList(response.body().orEmpty())
+                    val items = response.body().orEmpty()
+                    adapter.submitList(items)
+                    if (items.isEmpty()) {
+                        Toast.makeText(
+                            this@RegistrationListActivity,
+                            "No registrations found.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 } else {
                     Toast.makeText(
                         this@RegistrationListActivity,
@@ -75,6 +91,7 @@ class RegistrationListActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Registration>>, t: Throwable) {
+                showLoading(false)
                 Toast.makeText(
                     this@RegistrationListActivity,
                     "Error: ${t.message}",
@@ -82,5 +99,9 @@ class RegistrationListActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun showLoading(show: Boolean) {
+        progressBar.visibility = if (show) View.VISIBLE else View.GONE
     }
 }
