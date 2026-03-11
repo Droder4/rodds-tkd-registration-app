@@ -27,4 +27,14 @@ interface ApiService {
     fun sendPendingEmails(
         @Query("action") action: String = "sendPendingEmails"
     ): Call<SendEmailResponse>
+
+    @GET("exec")
+    fun sendRegistrationCompleteEmails(
+        @Query("action") action: String = "sendRegistrationCompleteEmails"
+    ): Call<SendEmailResponse>
+
+    @GET("exec")
+    fun sendIncompleteRegistrationReminders(
+        @Query("action") action: String = "sendIncompleteRegistrationReminders"
+    ): Call<SendEmailResponse>
 }
