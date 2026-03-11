@@ -37,13 +37,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View by Class"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/btnSendWelcomeEmails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send Welcome Emails" />
+            android:text="Send Welcome Emails"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSendCompleteEmails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Registration Complete Emails"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSendIncompleteReminders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Incomplete Registration Reminders" />
 
     </LinearLayout>
 </ScrollView>
