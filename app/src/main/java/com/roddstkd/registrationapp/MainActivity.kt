@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         val btnViewByClub = findViewById<Button>(R.id.btnViewByClub)
         val btnViewByClass = findViewById<Button>(R.id.btnViewByClass)
         val btnSendWelcomeEmails = findViewById<Button>(R.id.btnSendWelcomeEmails)
+        val btnSendCompleteEmails = findViewById<Button>(R.id.btnSendCompleteEmails)
+        val btnSendIncompleteReminders = findViewById<Button>(R.id.btnSendIncompleteReminders)
 
         btnViewRegistrations.setOnClickListener {
             openListScreen("all", "")
@@ -34,7 +36,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSendWelcomeEmails.setOnClickListener {
-            sendPendingEmails()
+            sendWelcomeEmails()
+        }
+
+        btnSendCompleteEmails.setOnClickListener {
+            sendRegistrationCompleteEmails()
+        }
+
+        btnSendIncompleteReminders.setOnClickListener {
+            sendIncompleteRegistrationReminders()
         }
     }
 
@@ -68,8 +78,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun sendPendingEmails() {
-        Toast.makeText(this, "Sending pending welcome emails...", Toast.LENGTH_SHORT).show()
+    private fun sendWelcomeEmails() {
+        Toast.makeText(this, "Sending welcome emails...", Toast.LENGTH_SHORT).show()
 
         RetrofitClient.api.sendPendingEmails().enqueue(object : Callback<SendEmailResponse> {
             override fun onResponse(
@@ -78,26 +88,58 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        body.message,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@MainActivity, body.message, Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Failed to send emails.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@MainActivity, "Failed to send welcome emails.", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<SendEmailResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Error: ${t.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun sendRegistrationCompleteEmails() {
+        Toast.makeText(this, "Sending registration complete emails...", Toast.LENGTH_SHORT).show()
+
+        RetrofitClient.api.sendRegistrationCompleteEmails().enqueue(object : Callback<SendEmailResponse> {
+            override fun onResponse(
+                call: Call<SendEmailResponse>,
+                response: Response<SendEmailResponse>
+            ) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    Toast.makeText(this@MainActivity, body.message, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Failed to send registration complete emails.", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SendEmailResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun sendIncompleteRegistrationReminders() {
+        Toast.makeText(this, "Sending incomplete registration reminders...", Toast.LENGTH_SHORT).show()
+
+        RetrofitClient.api.sendIncompleteRegistrationReminders().enqueue(object : Callback<SendEmailResponse> {
+            override fun onResponse(
+                call: Call<SendEmailResponse>,
+                response: Response<SendEmailResponse>
+            ) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    Toast.makeText(this@MainActivity, body.message, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Failed to send incomplete reminders.", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SendEmailResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
     }
