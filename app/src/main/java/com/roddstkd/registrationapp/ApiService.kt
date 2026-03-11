@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
+
     @GET("exec")
     fun getRegistrations(
         @Query("action") action: String = "getRegistrations"
