@@ -12,11 +12,10 @@ data class Registration(
     val birthdate: String? = "",
     val grade: String? = "",
     val assignedClass: String? = "",
-    val membershipNoticeAgreed: String? = "",
-    val lateFeeNoticeAgreed: String? = "",
     val emailStatus: String? = "",
-    val emailSentDate: String? = "",
-    val notes: String? = ""
+    val registrationStatus: String? = "",
+    val completeEmailSent: String? = "",
+    val incompleteReminderSent: String? = ""
 )
 
 data class SendEmailResponse(
