@@ -21,18 +21,22 @@ class MainActivity : AppCompatActivity() {
         val btnSendWelcomeEmails = findViewById<Button>(R.id.btnSendWelcomeEmails)
 
         btnViewRegistrations.setOnClickListener {
+            Toast.makeText(this, "Loading all registrations...", Toast.LENGTH_SHORT).show()
             openListScreen("all", "")
         }
 
         btnViewByClub.setOnClickListener {
+            Toast.makeText(this, "Loading Cornwall registrations...", Toast.LENGTH_SHORT).show()
             openListScreen("club", "Cornwall")
         }
 
         btnViewByClass.setOnClickListener {
+            Toast.makeText(this, "Loading Class 1 registrations...", Toast.LENGTH_SHORT).show()
             openListScreen("class", "Class 1")
         }
 
         btnSendWelcomeEmails.setOnClickListener {
+            Toast.makeText(this, "Sending pending welcome emails...", Toast.LENGTH_SHORT).show()
             sendPendingEmails()
         }
     }
@@ -53,26 +57,14 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        body.message,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@MainActivity, body.message, Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Failed to send emails.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@MainActivity, "Failed to send emails.", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<SendEmailResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Error: ${t.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
     }
