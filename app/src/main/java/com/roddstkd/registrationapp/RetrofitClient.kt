@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
     private const val BASE_URL =
-        "https://script.google.com/macros/s/AKfycbyaQyLqpPoi6lqM1cu4knidOD0RefBFBDbdn7Rk1ZwSEsMYfYpe12c8NfdGRKZKGsa3gg/"
+        "https://script.google.com/macros/s/AKfycbzYcMsfRZnFgqXF0Rb7-4Z-BHfrUtfNXkcNkSKWXeHTHL6ptPaatTyhIsmeBeNmieciBg/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
