@@ -1,1 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rodd's Taekwondo"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnViewRegistrations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Registrations"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnViewByClub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View by Club"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnViewByClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View by Class"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSendWelcomeEmails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Welcome Emails" />
+
+    </LinearLayout>
+</ScrollView>
