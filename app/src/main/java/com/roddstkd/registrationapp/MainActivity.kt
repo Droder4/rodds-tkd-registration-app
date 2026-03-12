@@ -15,10 +15,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, RegistrationListActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnAttendance).setOnClickListener {
-            startActivity(Intent(this, AttendanceActivity::class.java))
-        }
-
         findViewById<Button>(R.id.btnBeltTesting).setOnClickListener {
             startActivity(Intent(this, BeltTestingActivity::class.java))
         }
