@@ -18,10 +18,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".AttendanceActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".RegistrationListActivity"
             android:exported="false" />
 
