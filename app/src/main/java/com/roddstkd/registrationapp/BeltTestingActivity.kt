@@ -105,6 +105,7 @@ class BeltTestingActivity : AppCompatActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_belt_testing_manage, null)
 
         val etNotes = view.findViewById<EditText>(R.id.etBeltNotes)
+        val etBeltTestDate = view.findViewById<EditText>(R.id.etBeltTestDate)
         val spinnerCurrentBelt = view.findViewById<Spinner>(R.id.spinnerCurrentBeltOnly)
         val spinnerTestingFor = view.findViewById<Spinner>(R.id.spinnerTestingForOnly)
 
@@ -113,6 +114,7 @@ class BeltTestingActivity : AppCompatActivity() {
 
         spinnerCurrentBelt.setSelection(beltOptions.indexOf(student.currentBelt ?: "").coerceAtLeast(0))
         spinnerTestingFor.setSelection(beltOptions.indexOf(student.testingFor ?: "").coerceAtLeast(0))
+        etBeltTestDate.setText(student.beltTestDate ?: "")
         etNotes.setText(student.studentNotes ?: "")
 
         AlertDialog.Builder(this)
@@ -123,6 +125,7 @@ class BeltTestingActivity : AppCompatActivity() {
                     student = student,
                     currentBelt = spinnerCurrentBelt.selectedItem.toString(),
                     testingFor = spinnerTestingFor.selectedItem.toString(),
+                    beltTestDate = etBeltTestDate.text.toString(),
                     notes = etNotes.text.toString()
                 )
             }
@@ -134,6 +137,7 @@ class BeltTestingActivity : AppCompatActivity() {
         student: Registration,
         currentBelt: String,
         testingFor: String,
+        beltTestDate: String,
         notes: String
     ) {
         val json = JSONObject().apply {
@@ -144,6 +148,7 @@ class BeltTestingActivity : AppCompatActivity() {
             put("amountPaid", student.amountPaid ?: "")
             put("currentBelt", currentBelt)
             put("testingFor", testingFor)
+            put("beltTestDate", beltTestDate)
             put("studentNotes", notes)
         }
 
