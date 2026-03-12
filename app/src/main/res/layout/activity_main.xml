@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -16,21 +16,79 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:paddingBottom="24dp" />
+            android:paddingBottom="16dp" />
 
-        <Button
-            android:id="@+id/btnStudents"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Students"
-            android:layout_marginBottom="12dp" />
+            android:orientation="vertical"
+            android:background="#F3F6FB"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvTotalStudents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Students: 0"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCornwallCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cornwall: 0"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/tvMontagueCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Montague: 0"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/tvPendingEmails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pending Welcome Emails: 0"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/tvUnpaidCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unpaid Students: 0"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/tvBeltInviteCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Belt Invites Ready: 0"
+                android:layout_marginTop="6dp" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/btnBeltTesting"
+            android:id="@+id/btnViewRegistrations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Belt Testing"
-            android:layout_marginBottom="12dp" />
+            android:text="View Registrations"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnCornwallRoster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Cornwall Roster"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnMontagueRoster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Montague Roster"
+            android:layout_marginBottom="10dp" />
 
         <Button
             android:id="@+id/btnCommunications"
