@@ -1,1 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDialogStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Belt"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etDialogCurrentBelt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Example: Yellow Stripe"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Testing For"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinnerDialogTestingFor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvDialogFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fee: "
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <CheckBox
+            android:id="@+id/cbDialogEligible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Eligible for Testing" />
+
+        <CheckBox
+            android:id="@+id/cbDialogInvited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invitation Sent" />
+
+        <CheckBox
+            android:id="@+id/cbDialogConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Confirmed" />
+
+        <CheckBox
+            android:id="@+id/cbDialogPaid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Testing Fee Paid"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notes"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etDialogNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add notes about testing"
+            android:minLines="3"
+            android:gravity="top" />
+
+    </LinearLayout>
+
+</ScrollView>
