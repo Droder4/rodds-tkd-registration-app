@@ -1,6 +1,8 @@
 package com.roddstkd.registrationapp
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import okhttp3.MediaType.Companion.toMediaType
@@ -19,6 +21,7 @@ class BeltTestingActivity : AppCompatActivity() {
     private lateinit var btnSendInvites: Button
 
     private var items: MutableList<BeltTestItem> = mutableListOf()
+    private lateinit var adapter: BeltTestingListAdapter
 
     private val beltOptions = listOf(
         "",
@@ -42,9 +45,16 @@ class BeltTestingActivity : AppCompatActivity() {
         btnSave = findViewById(R.id.btnSaveBeltTesting)
         btnSendInvites = findViewById(R.id.btnSendBeltInvites)
 
+        adapter = BeltTestingListAdapter()
+        listView.adapter = adapter
+
         btnLoad.setOnClickListener { loadBeltTesting() }
         btnSave.setOnClickListener { saveBeltTesting() }
         btnSendInvites.setOnClickListener { sendInvitations() }
+
+        listView.setOnItemClickListener { _, _, position, _ ->
+            showEditDialog(position)
+        }
 
         loadBeltTesting()
     }
@@ -54,9 +64,10 @@ class BeltTestingActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<BeltTestItem>>, response: Response<List<BeltTestItem>>) {
                 if (response.isSuccessful) {
                     items = response.body().orEmpty().toMutableList()
-                    listView.adapter = BeltTestingAdapter()
+                    adapter.notifyDataSetChanged()
+                    Toast.makeText(this@BeltTestingActivity, "Belt testing list loaded.", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this@BeltTestingActivity, "Failed to load belt testing.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@BeltTestingActivity, "Failed to load belt testing list.", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -66,38 +77,88 @@ class BeltTestingActivity : AppCompatActivity() {
         })
     }
 
+    private fun showEditDialog(position: Int) {
+        val item = items[position]
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_belt_testing_edit, null)
+
+        val tvStudent = view.findViewById<TextView>(R.id.tvDialogStudent)
+        val etCurrentBelt = view.findViewById<EditText>(R.id.etDialogCurrentBelt)
+        val spinnerTestingFor = view.findViewById<Spinner>(R.id.spinnerDialogTestingFor)
+        val tvFee = view.findViewById<TextView>(R.id.tvDialogFee)
+        val cbEligible = view.findViewById<CheckBox>(R.id.cbDialogEligible)
+        val cbInvited = view.findViewById<CheckBox>(R.id.cbDialogInvited)
+        val cbConfirmed = view.findViewById<CheckBox>(R.id.cbDialogConfirmed)
+        val cbPaid = view.findViewById<CheckBox>(R.id.cbDialogPaid)
+        val etNotes = view.findViewById<EditText>(R.id.etDialogNotes)
+
+        tvStudent.text = "${item.studentName} • ${item.location} • ${item.className}"
+        etCurrentBelt.setText(item.currentBelt ?: "")
+        etNotes.setText(item.notes ?: "")
+
+        spinnerTestingFor.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            beltOptions
+        )
+
+        val selectedIndex = beltOptions.indexOf(item.testingFor ?: "").let { if (it >= 0) it else 0 }
+        spinnerTestingFor.setSelection(selectedIndex)
+
+        tvFee.text = "Fee: ${getFeeForBelt(item.testingFor ?: "")}"
+
+        spinnerTestingFor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, pos: Int, id: Long) {
+                tvFee.text = "Fee: ${getFeeForBelt(beltOptions[pos])}"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        cbEligible.isChecked = item.eligible == "Yes"
+        cbInvited.isChecked = item.invited == "Yes"
+        cbConfirmed.isChecked = item.confirmed == "Yes"
+        cbPaid.isChecked = item.paid == "Yes"
+
+        AlertDialog.Builder(this)
+            .setTitle("Edit Belt Test")
+            .setView(view)
+            .setPositiveButton("Save") { _, _ ->
+                val updated = item.copy(
+                    currentBelt = etCurrentBelt.text.toString(),
+                    testingFor = spinnerTestingFor.selectedItem.toString(),
+                    eligible = if (cbEligible.isChecked) "Yes" else "No",
+                    invited = if (cbInvited.isChecked) "Yes" else "No",
+                    confirmed = if (cbConfirmed.isChecked) "Yes" else "No",
+                    paid = if (cbPaid.isChecked) "Yes" else "No",
+                    fee = getFeeForBelt(spinnerTestingFor.selectedItem.toString()),
+                    notes = etNotes.text.toString()
+                )
+
+                items[position] = updated
+                adapter.notifyDataSetChanged()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     private fun saveBeltTesting() {
         val jsonItems = JSONArray()
 
-        for (i in items.indices) {
-            val rowView = listView.getChildAt(i - listView.firstVisiblePosition) ?: continue
-
-            val spinnerTestingFor = rowView.findViewById<Spinner>(R.id.spinnerTestingFor)
-            val cbEligible = rowView.findViewById<CheckBox>(R.id.cbEligible)
-            val cbInvited = rowView.findViewById<CheckBox>(R.id.cbInvited)
-            val cbConfirmed = rowView.findViewById<CheckBox>(R.id.cbConfirmed)
-            val cbPaid = rowView.findViewById<CheckBox>(R.id.cbPaid)
-            val etCurrentBelt = rowView.findViewById<EditText>(R.id.etCurrentBelt)
-            val etNotes = rowView.findViewById<EditText>(R.id.etBeltNotes)
-
-            val testingFor = spinnerTestingFor.selectedItem.toString()
-            val fee = getFeeForBelt(testingFor)
-
+        items.forEach { item ->
             val obj = JSONObject().apply {
-                put("studentName", items[i].studentName ?: "")
-                put("location", items[i].location ?: "")
-                put("className", items[i].className ?: "")
-                put("currentBelt", etCurrentBelt.text.toString())
-                put("testingFor", testingFor)
-                put("eligible", if (cbEligible.isChecked) "Yes" else "No")
-                put("invited", if (cbInvited.isChecked) "Yes" else "No")
-                put("confirmed", if (cbConfirmed.isChecked) "Yes" else "No")
-                put("paid", if (cbPaid.isChecked) "Yes" else "No")
-                put("fee", fee)
-                put("notes", etNotes.text.toString())
-                put("invitationSent", items[i].invitationSent ?: "")
+                put("studentName", item.studentName ?: "")
+                put("location", item.location ?: "")
+                put("className", item.className ?: "")
+                put("currentBelt", item.currentBelt ?: "")
+                put("testingFor", item.testingFor ?: "")
+                put("eligible", item.eligible ?: "No")
+                put("invited", item.invited ?: "No")
+                put("confirmed", item.confirmed ?: "No")
+                put("paid", item.paid ?: "No")
+                put("fee", item.fee ?: "")
+                put("notes", item.notes ?: "")
+                put("invitationSent", item.invitationSent ?: "")
             }
-
             jsonItems.put(obj)
         }
 
@@ -133,7 +194,7 @@ class BeltTestingActivity : AppCompatActivity() {
 
         RetrofitClient.api.sendBeltTestInvitations(body).enqueue(object : Callback<ActionResponse> {
             override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
-                Toast.makeText(this@BeltTestingActivity, response.body()?.message ?: "Sent", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BeltTestingActivity, response.body()?.message ?: "Invitations sent", Toast.LENGTH_LONG).show()
                 loadBeltTesting()
             }
 
@@ -158,56 +219,22 @@ class BeltTestingActivity : AppCompatActivity() {
         }
     }
 
-    inner class BeltTestingAdapter : BaseAdapter() {
+    inner class BeltTestingListAdapter : BaseAdapter() {
         override fun getCount(): Int = items.size
         override fun getItem(position: Int): Any = items[position]
         override fun getItemId(position: Int): Long = position.toLong()
 
         override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup?): android.view.View {
-            val view = layoutInflater.inflate(R.layout.item_belt_testing, parent, false)
+            val view = convertView ?: layoutInflater.inflate(R.layout.item_belt_testing_simple, parent, false)
             val item = items[position]
 
-            val tvStudentName = view.findViewById<TextView>(R.id.tvBeltStudentName)
-            val tvStudentInfo = view.findViewById<TextView>(R.id.tvBeltStudentInfo)
-            val etCurrentBelt = view.findViewById<EditText>(R.id.etCurrentBelt)
-            val spinnerTestingFor = view.findViewById<Spinner>(R.id.spinnerTestingFor)
-            val tvFee = view.findViewById<TextView>(R.id.tvBeltFee)
-            val cbEligible = view.findViewById<CheckBox>(R.id.cbEligible)
-            val cbInvited = view.findViewById<CheckBox>(R.id.cbInvited)
-            val cbConfirmed = view.findViewById<CheckBox>(R.id.cbConfirmed)
-            val cbPaid = view.findViewById<CheckBox>(R.id.cbPaid)
-            val etNotes = view.findViewById<EditText>(R.id.etBeltNotes)
+            val tvName = view.findViewById<TextView>(R.id.tvSimpleStudentName)
+            val tvInfo = view.findViewById<TextView>(R.id.tvSimpleStudentInfo)
+            val tvStatus = view.findViewById<TextView>(R.id.tvSimpleStudentStatus)
 
-            tvStudentName.text = item.studentName ?: ""
-            tvStudentInfo.text = "${item.location} • ${item.className}"
-
-            etCurrentBelt.setText(item.currentBelt ?: "")
-            etNotes.setText(item.notes ?: "")
-
-            spinnerTestingFor.adapter = ArrayAdapter(
-                this@BeltTestingActivity,
-                android.R.layout.simple_spinner_dropdown_item,
-                beltOptions
-            )
-
-            val selectedIndex = beltOptions.indexOf(item.testingFor ?: "").let { if (it >= 0) it else 0 }
-            spinnerTestingFor.setSelection(selectedIndex)
-
-            tvFee.text = "Fee: ${getFeeForBelt(item.testingFor ?: "")}"
-
-            spinnerTestingFor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view2: android.view.View?, pos: Int, id: Long) {
-                    val selectedBelt = beltOptions[pos]
-                    tvFee.text = "Fee: ${getFeeForBelt(selectedBelt)}"
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
-
-            cbEligible.isChecked = item.eligible == "Yes"
-            cbInvited.isChecked = item.invited == "Yes"
-            cbConfirmed.isChecked = item.confirmed == "Yes"
-            cbPaid.isChecked = item.paid == "Yes"
+            tvName.text = item.studentName ?: ""
+            tvInfo.text = "${item.location} • ${item.className}\nCurrent: ${item.currentBelt ?: ""}\nTesting For: ${item.testingFor ?: ""}\nFee: ${item.fee ?: ""}"
+            tvStatus.text = "Eligible: ${item.eligible}  Invited: ${item.invited}  Confirmed: ${item.confirmed}  Paid: ${item.paid}"
 
             return view
         }
