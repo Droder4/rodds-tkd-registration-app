@@ -1,13 +1,16 @@
 package com.roddstkd.registrationapp
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,93 +18,111 @@ import retrofit2.Response
 class RegistrationListActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var titleText: TextView
-    private lateinit var progressBar: ProgressBar
-    private val adapter = RegistrationAdapter()
+    private lateinit var adapter: RegistrationAdapter
+    private var allItems: List<Registration> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration_list)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        titleText = findViewById(R.id.tvTitle)
-        progressBar = findViewById(R.id.progressBar)
-
+        recyclerView = findViewById(R.id.recyclerViewRegistrations)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = RegistrationAdapter(
+            onEditNotes = { item -> showEditNotesDialog(item) },
+            onMarkEmailSent = { item -> markWelcomeEmailSent(item) }
+        )
         recyclerView.adapter = adapter
 
-        val mode = intent.getStringExtra("mode") ?: "all"
-        val value = intent.getStringExtra("value") ?: ""
-
-        when (mode) {
-            "club" -> {
-                titleText.text = "Registrations - $value"
-                loadByClub(value)
-            }
-            "class" -> {
-                titleText.text = "Registrations - $value"
-                loadByClass(value)
-            }
-            else -> {
-                titleText.text = "All Registrations"
-                loadAll()
-            }
+        findViewById<Button>(R.id.btnAll).setOnClickListener { adapter.submitList(allItems) }
+        findViewById<Button>(R.id.btnCornwall).setOnClickListener {
+            adapter.submitList(allItems.filter { it.location == "Cornwall" })
         }
+        findViewById<Button>(R.id.btnMontague).setOnClickListener {
+            adapter.submitList(allItems.filter { it.location == "Montague" })
+        }
+        findViewById<Button>(R.id.btnClass1).setOnClickListener {
+            adapter.submitList(allItems.filter { it.assignedClass == "Class 1" })
+        }
+        findViewById<Button>(R.id.btnClass2).setOnClickListener {
+            adapter.submitList(allItems.filter { it.assignedClass == "Class 2" })
+        }
+        findViewById<Button>(R.id.btnClass3).setOnClickListener {
+            adapter.submitList(allItems.filter { it.assignedClass == "Class 3" })
+        }
+
+        loadRegistrations()
     }
 
-    private fun loadAll() {
-        showLoading(true)
-        RetrofitClient.api.getRegistrations().enqueue(registrationCallback())
-    }
-
-    private fun loadByClub(club: String) {
-        showLoading(true)
-        RetrofitClient.api.getByClub(club = club).enqueue(registrationCallback())
-    }
-
-    private fun loadByClass(className: String) {
-        showLoading(true)
-        RetrofitClient.api.getByClass(className = className).enqueue(registrationCallback())
-    }
-
-    private fun registrationCallback(): Callback<List<Registration>> {
-        return object : Callback<List<Registration>> {
+    private fun loadRegistrations() {
+        RetrofitClient.api.getRegistrations().enqueue(object : Callback<List<Registration>> {
             override fun onResponse(
                 call: Call<List<Registration>>,
                 response: Response<List<Registration>>
             ) {
-                showLoading(false)
                 if (response.isSuccessful) {
-                    val items = response.body().orEmpty()
-                    adapter.submitList(items)
-                    if (items.isEmpty()) {
-                        Toast.makeText(
-                            this@RegistrationListActivity,
-                            "No registrations found.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                    allItems = response.body().orEmpty()
+                    adapter.submitList(allItems)
                 } else {
-                    Toast.makeText(
-                        this@RegistrationListActivity,
-                        "Failed to load registrations.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@RegistrationListActivity, "Failed to load students.", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Registration>>, t: Throwable) {
-                showLoading(false)
-                Toast.makeText(
-                    this@RegistrationListActivity,
-                    "Error: ${t.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this@RegistrationListActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
             }
-        }
+        })
     }
 
-    private fun showLoading(show: Boolean) {
-        progressBar.visibility = if (show) View.VISIBLE else View.GONE
+    private fun showEditNotesDialog(item: Registration) {
+        val input = EditText(this)
+        input.setText(item.notes ?: "")
+
+        AlertDialog.Builder(this)
+            .setTitle("Edit Notes")
+            .setView(input)
+            .setPositiveButton("Save") { _, _ ->
+                updateNotes(item, input.text.toString())
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateNotes(item: Registration, notes: String) {
+        val json = JSONObject().apply {
+            put("action", "updateStudentNotes")
+            put("studentName", item.studentName ?: "")
+            put("email", item.email ?: "")
+            put("notes", notes)
+        }
+
+        val body = json.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        RetrofitClient.api.updateStudentNotes(body).enqueue(object : Callback<ActionResponse> {
+            override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
+                Toast.makeText(this@RegistrationListActivity, response.body()?.message ?: "Saved", Toast.LENGTH_LONG).show()
+                loadRegistrations()
+            }
+
+            override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
+                Toast.makeText(this@RegistrationListActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun markWelcomeEmailSent(item: Registration) {
+        RetrofitClient.api.markWelcomeEmailSent(
+            email = item.email ?: "",
+            studentName = item.studentName ?: ""
+        ).enqueue(object : Callback<ActionResponse> {
+            override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
+                Toast.makeText(this@RegistrationListActivity, response.body()?.message ?: "Updated", Toast.LENGTH_LONG).show()
+                loadRegistrations()
+            }
+
+            override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
+                Toast.makeText(this@RegistrationListActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 }
