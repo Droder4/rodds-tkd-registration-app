@@ -2,8 +2,10 @@ package com.roddstkd.registrationapp
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.widget.Button
+import android.view.LayoutInflater
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,49 +21,53 @@ class RegistrationListActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationAdapter
-    private var allItems: List<Registration> = emptyList()
+    private var items: List<Registration> = emptyList()
+    private var clubFilter: String = "all"
+
+    private val paymentOptions = listOf("Unpaid", "Partial", "Paid in Full")
+    private val beltOptions = listOf(
+        "",
+        "White Belt",
+        "Yellow Stripe",
+        "Yellow Belt",
+        "Green Stripe",
+        "Green Belt",
+        "Blue Stripe",
+        "Blue Belt",
+        "Red Stripe",
+        "Red Belt",
+        "Black Stripe"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration_list)
 
+        clubFilter = intent.getStringExtra("club_filter") ?: "all"
+
         recyclerView = findViewById(R.id.recyclerViewRegistrations)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = RegistrationAdapter(
-            onEditNotes = { item -> showEditNotesDialog(item) },
-            onMarkEmailSent = { item -> markWelcomeEmailSent(item) }
-        )
+
+        adapter = RegistrationAdapter { item ->
+            showManageDialog(item)
+        }
         recyclerView.adapter = adapter
 
-        findViewById<Button>(R.id.btnAll).setOnClickListener { adapter.submitList(allItems) }
-        findViewById<Button>(R.id.btnCornwall).setOnClickListener {
-            adapter.submitList(allItems.filter { it.location == "Cornwall" })
-        }
-        findViewById<Button>(R.id.btnMontague).setOnClickListener {
-            adapter.submitList(allItems.filter { it.location == "Montague" })
-        }
-        findViewById<Button>(R.id.btnClass1).setOnClickListener {
-            adapter.submitList(allItems.filter { it.assignedClass == "Class 1" })
-        }
-        findViewById<Button>(R.id.btnClass2).setOnClickListener {
-            adapter.submitList(allItems.filter { it.assignedClass == "Class 2" })
-        }
-        findViewById<Button>(R.id.btnClass3).setOnClickListener {
-            adapter.submitList(allItems.filter { it.assignedClass == "Class 3" })
-        }
-
-        loadRegistrations()
+        loadStudents()
     }
 
-    private fun loadRegistrations() {
-        RetrofitClient.api.getRegistrations().enqueue(object : Callback<List<Registration>> {
-            override fun onResponse(
-                call: Call<List<Registration>>,
-                response: Response<List<Registration>>
-            ) {
+    private fun loadStudents() {
+        val call = if (clubFilter == "all") {
+            RetrofitClient.api.getRegistrations()
+        } else {
+            RetrofitClient.api.getByClub(club = clubFilter)
+        }
+
+        call.enqueue(object : Callback<List<Registration>> {
+            override fun onResponse(call: Call<List<Registration>>, response: Response<List<Registration>>) {
                 if (response.isSuccessful) {
-                    allItems = response.body().orEmpty()
-                    adapter.submitList(allItems)
+                    items = response.body().orEmpty()
+                    adapter.submitList(items)
                 } else {
                     Toast.makeText(this@RegistrationListActivity, "Failed to load students.", Toast.LENGTH_LONG).show()
                 }
@@ -73,51 +79,68 @@ class RegistrationListActivity : AppCompatActivity() {
         })
     }
 
-    private fun showEditNotesDialog(item: Registration) {
-        val input = EditText(this)
-        input.setText(item.notes ?: "")
+    private fun showManageDialog(item: Registration) {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_manage_student, null)
+
+        val etAmountPaid = view.findViewById<EditText>(R.id.etAmountPaid)
+        val etNotes = view.findViewById<EditText>(R.id.etStudentNotes)
+        val spinnerPayment = view.findViewById<Spinner>(R.id.spinnerPaymentStatus)
+        val spinnerCurrentBelt = view.findViewById<Spinner>(R.id.spinnerCurrentBelt)
+        val spinnerTestingFor = view.findViewById<Spinner>(R.id.spinnerTestingFor)
+
+        etAmountPaid.setText(item.amountPaid ?: "")
+        etNotes.setText(item.studentNotes ?: "")
+
+        spinnerPayment.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, paymentOptions)
+        spinnerCurrentBelt.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, beltOptions)
+        spinnerTestingFor.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, beltOptions)
+
+        spinnerPayment.setSelection(paymentOptions.indexOf(item.paymentStatus ?: "Unpaid").coerceAtLeast(0))
+        spinnerCurrentBelt.setSelection(beltOptions.indexOf(item.currentBelt ?: "").coerceAtLeast(0))
+        spinnerTestingFor.setSelection(beltOptions.indexOf(item.testingFor ?: "").coerceAtLeast(0))
 
         AlertDialog.Builder(this)
-            .setTitle("Edit Notes")
-            .setView(input)
+            .setTitle(item.studentName ?: "Student")
+            .setView(view)
             .setPositiveButton("Save") { _, _ ->
-                updateNotes(item, input.text.toString())
+                saveStudent(
+                    item = item,
+                    paymentStatus = spinnerPayment.selectedItem.toString(),
+                    amountPaid = etAmountPaid.text.toString(),
+                    currentBelt = spinnerCurrentBelt.selectedItem.toString(),
+                    testingFor = spinnerTestingFor.selectedItem.toString(),
+                    notes = etNotes.text.toString()
+                )
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    private fun updateNotes(item: Registration, notes: String) {
+    private fun saveStudent(
+        item: Registration,
+        paymentStatus: String,
+        amountPaid: String,
+        currentBelt: String,
+        testingFor: String,
+        notes: String
+    ) {
         val json = JSONObject().apply {
-            put("action", "updateStudentNotes")
-            put("studentName", item.studentName ?: "")
+            put("action", "updateStudentManagement")
             put("email", item.email ?: "")
-            put("notes", notes)
+            put("studentName", item.studentName ?: "")
+            put("paymentStatus", paymentStatus)
+            put("amountPaid", amountPaid)
+            put("currentBelt", currentBelt)
+            put("testingFor", testingFor)
+            put("studentNotes", notes)
         }
 
-        val body = json.toString()
-            .toRequestBody("application/json; charset=utf-8".toMediaType())
+        val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
 
-        RetrofitClient.api.updateStudentNotes(body).enqueue(object : Callback<ActionResponse> {
+        RetrofitClient.api.updateStudentManagement(body).enqueue(object : Callback<ActionResponse> {
             override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
                 Toast.makeText(this@RegistrationListActivity, response.body()?.message ?: "Saved", Toast.LENGTH_LONG).show()
-                loadRegistrations()
-            }
-
-            override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
-                Toast.makeText(this@RegistrationListActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
-            }
-        })
-    }
-
-    private fun markWelcomeEmailSent(item: Registration) {
-        RetrofitClient.api.markWelcomeEmailSent(
-            email = item.email ?: "",
-            studentName = item.studentName ?: ""
-        ).enqueue(object : Callback<ActionResponse> {
-            override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
-                Toast.makeText(this@RegistrationListActivity, response.body()?.message ?: "Updated", Toast.LENGTH_LONG).show()
-                loadRegistrations()
+                loadStudents()
             }
 
             override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
