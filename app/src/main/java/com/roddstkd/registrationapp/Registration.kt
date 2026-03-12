@@ -40,10 +40,12 @@ data class BeltTestItem(
     val location: String? = "",
     val className: String? = "",
     val currentBelt: String? = "",
+    val testingFor: String? = "",
     val eligible: String? = "",
     val invited: String? = "",
     val confirmed: String? = "",
     val paid: String? = "",
+    val fee: String? = "",
     val notes: String? = "",
     val invitationSent: String? = ""
 )
