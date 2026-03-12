@@ -19,45 +19,31 @@
             android:paddingBottom="24dp" />
 
         <Button
-            android:id="@+id/btnViewRegistrations"
+            android:id="@+id/btnStudents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Registrations"
+            android:text="Students"
             android:layout_marginBottom="12dp" />
 
         <Button
-            android:id="@+id/btnViewByClub"
+            android:id="@+id/btnAttendance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View by Club"
+            android:text="Attendance"
             android:layout_marginBottom="12dp" />
 
         <Button
-            android:id="@+id/btnViewByClass"
+            android:id="@+id/btnBeltTesting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View by Class"
-            android:layout_marginBottom="24dp" />
-
-        <Button
-            android:id="@+id/btnSendWelcomeEmails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Welcome Emails"
+            android:text="Belt Testing"
             android:layout_marginBottom="12dp" />
 
         <Button
-            android:id="@+id/btnSendCompleteEmails"
+            android:id="@+id/btnCommunications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send Registration Complete Emails"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnSendIncompleteReminders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Incomplete Registration Reminders" />
+            android:text="Communications" />
 
     </LinearLayout>
 </ScrollView>
