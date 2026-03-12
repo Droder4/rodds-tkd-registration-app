@@ -42,14 +42,6 @@ interface ApiService {
     ): Call<ActionResponse>
 
     @GET("exec")
-    fun getAttendance(
-        @Query("action") action: String = "getAttendance",
-        @Query("location") location: String = "",
-        @Query("className") className: String = "",
-        @Query("date") date: String = ""
-    ): Call<List<AttendanceItem>>
-
-    @GET("exec")
     fun getBeltTesting(
         @Query("action") action: String = "getBeltTesting"
     ): Call<List<BeltTestItem>>
@@ -59,11 +51,6 @@ interface ApiService {
         @Query("action") action: String = "markWelcomeEmailSent",
         @Query("email") email: String,
         @Query("studentName") studentName: String
-    ): Call<ActionResponse>
-
-    @POST("exec")
-    fun saveAttendance(
-        @Body body: RequestBody
     ): Call<ActionResponse>
 
     @POST("exec")
