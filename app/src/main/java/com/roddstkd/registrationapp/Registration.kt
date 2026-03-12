@@ -1,5 +1,14 @@
 package com.roddstkd.registrationapp
 
+data class DashboardStats(
+    val totalStudents: Int = 0,
+    val cornwallStudents: Int = 0,
+    val montagueStudents: Int = 0,
+    val pendingWelcomeEmails: Int = 0,
+    val unpaidStudents: Int = 0,
+    val beltInviteReady: Int = 0
+)
+
 data class Registration(
     val timestamp: String? = "",
     val studentType: String? = "",
@@ -13,25 +22,17 @@ data class Registration(
     val grade: String? = "",
     val assignedClass: String? = "",
     val emailStatus: String? = "",
-    val notes: String? = ""
+    val notes: String? = "",
+    val registrationStatus: String? = "",
+    val paymentStatus: String? = "",
+    val amountPaid: String? = "",
+    val currentBelt: String? = "",
+    val testingFor: String? = "",
+    val beltInviteStatus: String? = "",
+    val studentNotes: String? = ""
 )
 
 data class ActionResponse(
     val success: Boolean = false,
     val message: String = ""
-)
-
-data class BeltTestItem(
-    val studentName: String? = "",
-    val location: String? = "",
-    val className: String? = "",
-    val currentBelt: String? = "",
-    val testingFor: String? = "",
-    val eligible: String? = "",
-    val invited: String? = "",
-    val confirmed: String? = "",
-    val paid: String? = "",
-    val fee: String? = "",
-    val notes: String? = "",
-    val invitationSent: String? = ""
 )
