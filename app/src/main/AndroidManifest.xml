@@ -1,17 +1,19 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.roddstkd.registrationapp">
 
+    <!-- Internet permission required for Google Apps Script API -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:label="Rodd's TKD"
+        android:label="Rodds TKD"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoddsTKDRegistrationApp">
 
-        <activity
-            android:name=".RegistrationListActivity"
-            android:exported="false" />
-
+        <!-- Main screen -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -20,5 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Student list / admin -->
+        <activity
+            android:name=".RegistrationListActivity"
+            android:exported="false" />
+
+        <!-- Attendance tracking -->
+        <activity
+            android:name=".AttendanceActivity"
+            android:exported="false" />
+
+        <!-- Belt testing management -->
+        <activity
+            android:name=".BeltTestingActivity"
+            android:exported="false" />
+
+        <!-- Email / communication tools -->
+        <activity
+            android:name=".CommunicationsActivity"
+            android:exported="false" />
+
     </application>
+
 </manifest>
