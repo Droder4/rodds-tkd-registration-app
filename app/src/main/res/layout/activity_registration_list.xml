@@ -5,25 +5,56 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrations"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingBottom="12dp" />
+        android:layout_marginBottom="12dp">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All" />
+
+            <Button
+                android:id="@+id/btnCornwall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cornwall" />
+
+            <Button
+                android:id="@+id/btnMontague"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Montague" />
+
+            <Button
+                android:id="@+id/btnClass1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class 1" />
+
+            <Button
+                android:id="@+id/btnClass2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class 2" />
+
+            <Button
+                android:id="@+id/btnClass3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class 3" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewRegistrations"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
