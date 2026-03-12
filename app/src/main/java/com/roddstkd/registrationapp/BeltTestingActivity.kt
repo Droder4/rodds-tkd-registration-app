@@ -15,10 +15,12 @@ import retrofit2.Response
 
 class BeltTestingActivity : AppCompatActivity() {
 
-    private lateinit var listView: ListView
+    private lateinit var spinnerClub: Spinner
+    private lateinit var spinnerClass: Spinner
     private lateinit var btnLoad: Button
     private lateinit var btnSave: Button
     private lateinit var btnSendInvites: Button
+    private lateinit var listView: ListView
 
     private var items: MutableList<BeltTestItem> = mutableListOf()
     private lateinit var adapter: BeltTestingListAdapter
@@ -40,10 +42,24 @@ class BeltTestingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_belt_testing)
 
-        listView = findViewById(R.id.listBeltTesting)
+        spinnerClub = findViewById(R.id.spinnerBeltClub)
+        spinnerClass = findViewById(R.id.spinnerBeltClass)
         btnLoad = findViewById(R.id.btnLoadBeltTesting)
         btnSave = findViewById(R.id.btnSaveBeltTesting)
         btnSendInvites = findViewById(R.id.btnSendBeltInvites)
+        listView = findViewById(R.id.listBeltTesting)
+
+        spinnerClub.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            listOf("Cornwall", "Montague")
+        )
+
+        spinnerClass.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            listOf("Class 1", "Class 2", "Class 3")
+        )
 
         adapter = BeltTestingListAdapter()
         listView.adapter = adapter
@@ -55,26 +71,28 @@ class BeltTestingActivity : AppCompatActivity() {
         listView.setOnItemClickListener { _, _, position, _ ->
             showEditDialog(position)
         }
-
-        loadBeltTesting()
     }
 
     private fun loadBeltTesting() {
-        RetrofitClient.api.getBeltTesting().enqueue(object : Callback<List<BeltTestItem>> {
-            override fun onResponse(call: Call<List<BeltTestItem>>, response: Response<List<BeltTestItem>>) {
-                if (response.isSuccessful) {
-                    items = response.body().orEmpty().toMutableList()
-                    adapter.notifyDataSetChanged()
-                    Toast.makeText(this@BeltTestingActivity, "Belt testing list loaded.", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@BeltTestingActivity, "Failed to load belt testing list.", Toast.LENGTH_LONG).show()
-                }
-            }
+        val club = spinnerClub.selectedItem.toString()
+        val className = spinnerClass.selectedItem.toString()
 
-            override fun onFailure(call: Call<List<BeltTestItem>>, t: Throwable) {
-                Toast.makeText(this@BeltTestingActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
-            }
-        })
+        RetrofitClient.api.getBeltTesting(location = club, className = className)
+            .enqueue(object : Callback<List<BeltTestItem>> {
+                override fun onResponse(call: Call<List<BeltTestItem>>, response: Response<List<BeltTestItem>>) {
+                    if (response.isSuccessful) {
+                        items = response.body().orEmpty().toMutableList()
+                        adapter.notifyDataSetChanged()
+                        Toast.makeText(this@BeltTestingActivity, "List loaded.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@BeltTestingActivity, "Failed to load list.", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<BeltTestItem>>, t: Throwable) {
+                    Toast.makeText(this@BeltTestingActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+                }
+            })
     }
 
     private fun showEditDialog(position: Int) {
@@ -103,11 +121,10 @@ class BeltTestingActivity : AppCompatActivity() {
 
         val selectedIndex = beltOptions.indexOf(item.testingFor ?: "").let { if (it >= 0) it else 0 }
         spinnerTestingFor.setSelection(selectedIndex)
-
         tvFee.text = "Fee: ${getFeeForBelt(item.testingFor ?: "")}"
 
         spinnerTestingFor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, pos: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view2: android.view.View?, pos: Int, id: Long) {
                 tvFee.text = "Fee: ${getFeeForBelt(beltOptions[pos])}"
             }
 
@@ -123,7 +140,7 @@ class BeltTestingActivity : AppCompatActivity() {
             .setTitle("Edit Belt Test")
             .setView(view)
             .setPositiveButton("Save") { _, _ ->
-                val updated = item.copy(
+                items[position] = item.copy(
                     currentBelt = etCurrentBelt.text.toString(),
                     testingFor = spinnerTestingFor.selectedItem.toString(),
                     eligible = if (cbEligible.isChecked) "Yes" else "No",
@@ -133,8 +150,6 @@ class BeltTestingActivity : AppCompatActivity() {
                     fee = getFeeForBelt(spinnerTestingFor.selectedItem.toString()),
                     notes = etNotes.text.toString()
                 )
-
-                items[position] = updated
                 adapter.notifyDataSetChanged()
             }
             .setNegativeButton("Cancel", null)
@@ -183,25 +198,20 @@ class BeltTestingActivity : AppCompatActivity() {
     }
 
     private fun sendInvitations() {
-        val bodyJson = JSONObject().apply {
-            put("action", "sendBeltTestInvitations")
-            put("location", "")
-            put("className", "")
-        }
+        val club = spinnerClub.selectedItem.toString()
+        val className = spinnerClass.selectedItem.toString()
 
-        val body = bodyJson.toString()
-            .toRequestBody("application/json; charset=utf-8".toMediaType())
+        RetrofitClient.api.sendBeltTestInvitations(location = club, className = className)
+            .enqueue(object : Callback<ActionResponse> {
+                override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
+                    Toast.makeText(this@BeltTestingActivity, response.body()?.message ?: "Invitations sent", Toast.LENGTH_LONG).show()
+                    loadBeltTesting()
+                }
 
-        RetrofitClient.api.sendBeltTestInvitations(body).enqueue(object : Callback<ActionResponse> {
-            override fun onResponse(call: Call<ActionResponse>, response: Response<ActionResponse>) {
-                Toast.makeText(this@BeltTestingActivity, response.body()?.message ?: "Invitations sent", Toast.LENGTH_LONG).show()
-                loadBeltTesting()
-            }
-
-            override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
-                Toast.makeText(this@BeltTestingActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
-            }
-        })
+                override fun onFailure(call: Call<ActionResponse>, t: Throwable) {
+                    Toast.makeText(this@BeltTestingActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
+                }
+            })
     }
 
     private fun getFeeForBelt(belt: String): String {
@@ -228,13 +238,11 @@ class BeltTestingActivity : AppCompatActivity() {
             val view = convertView ?: layoutInflater.inflate(R.layout.item_belt_testing_simple, parent, false)
             val item = items[position]
 
-            val tvName = view.findViewById<TextView>(R.id.tvSimpleStudentName)
-            val tvInfo = view.findViewById<TextView>(R.id.tvSimpleStudentInfo)
-            val tvStatus = view.findViewById<TextView>(R.id.tvSimpleStudentStatus)
-
-            tvName.text = item.studentName ?: ""
-            tvInfo.text = "${item.location} • ${item.className}\nCurrent: ${item.currentBelt ?: ""}\nTesting For: ${item.testingFor ?: ""}\nFee: ${item.fee ?: ""}"
-            tvStatus.text = "Eligible: ${item.eligible}  Invited: ${item.invited}  Confirmed: ${item.confirmed}  Paid: ${item.paid}"
+            view.findViewById<TextView>(R.id.tvSimpleStudentName).text = item.studentName ?: ""
+            view.findViewById<TextView>(R.id.tvSimpleStudentInfo).text =
+                "${item.location} • ${item.className}\nCurrent: ${item.currentBelt ?: ""}\nTesting For: ${item.testingFor ?: ""}\nFee: ${item.fee ?: ""}"
+            view.findViewById<TextView>(R.id.tvSimpleStudentStatus).text =
+                "Eligible: ${item.eligible}  Invited: ${item.invited}  Confirmed: ${item.confirmed}  Paid: ${item.paid}"
 
             return view
         }
