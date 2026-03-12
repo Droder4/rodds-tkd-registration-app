@@ -35,6 +35,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Belt Test Date"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etBeltTestDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Example: 2026-05-14" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Notes"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
