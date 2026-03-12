@@ -10,6 +10,10 @@
         android:theme="@style/Theme.RoddsTKDRegistrationApp">
 
         <activity
+            android:name=".BeltTestingActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".CommunicationsActivity"
             android:exported="false" />
 
