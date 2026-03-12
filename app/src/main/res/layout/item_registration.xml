@@ -23,30 +23,16 @@
         android:text="Info" />
 
     <TextView
-        android:id="@+id/tvStudentNotes"
+        android:id="@+id/tvStudentStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="6dp"
-        android:text="Notes" />
+        android:text="Status" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btnManageStudent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="8dp">
-
-        <Button
-            android:id="@+id/btnEditNotes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Edit Notes" />
-
-        <Button
-            android:id="@+id/btnMarkEmailSent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mark Email Sent" />
-    </LinearLayout>
+        android:text="Manage Student"
+        android:layout_marginTop="10dp" />
 </LinearLayout>
