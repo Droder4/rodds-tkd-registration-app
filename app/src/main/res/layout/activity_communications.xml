@@ -1,60 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btnSendWelcomeEmails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:text="Send Welcome Emails" />
 
-        <Button
-            android:id="@+id/btnSendWelcomeEmails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Welcome Emails" />
-
-        <Button
-            android:id="@+id/btnSendCompleteEmails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Registration Complete Emails"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnSendIncompleteReminders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Incomplete Registration Reminders"
-            android:layout_marginTop="8dp" />
-
-        <Spinner
-            android:id="@+id/spinnerReminderClub"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
-
-        <Spinner
-            android:id="@+id/spinnerReminderClass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etReminderMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Reminder message"
-            android:minLines="4"
-            android:gravity="top"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnSendClassReminders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Class Reminders"
-            android:layout_marginTop="8dp" />
-    </LinearLayout>
-</ScrollView>
+    <Button
+        android:id="@+id/btnSendBeltInvites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Belt Test Invites"
+        android:layout_marginTop="10dp" />
+</LinearLayout>
