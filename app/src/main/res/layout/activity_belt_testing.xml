@@ -5,6 +5,13 @@
     android:orientation="vertical"
     android:padding="12dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tap a student to assign belts and testing details"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
