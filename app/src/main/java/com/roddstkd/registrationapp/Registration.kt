@@ -26,15 +26,6 @@ data class ActionResponse(
     val message: String = ""
 )
 
-data class AttendanceItem(
-    val date: String? = "",
-    val location: String? = "",
-    val className: String? = "",
-    val studentName: String? = "",
-    val present: String? = "",
-    val notes: String? = ""
-)
-
 data class BeltTestItem(
     val studentName: String? = "",
     val location: String? = "",
