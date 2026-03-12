@@ -13,12 +13,7 @@ data class Registration(
     val grade: String? = "",
     val assignedClass: String? = "",
     val emailStatus: String? = "",
-    val notes: String? = "",
-    val registrationStatus: String? = "",
-    val completeEmailSent: String? = "",
-    val incompleteReminderSent: String? = "",
-    val beltTestInvitationSent: String? = "",
-    val classReminderSent: String? = ""
+    val notes: String? = ""
 )
 
 data class ActionResponse(
