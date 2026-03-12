@@ -10,26 +10,33 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("exec")
+    fun getDashboardStats(
+        @Query("action") action: String = "getDashboardStats"
+    ): Call<DashboardStats>
+
+    @GET("exec")
     fun getRegistrations(
         @Query("action") action: String = "getRegistrations"
     ): Call<List<Registration>>
 
     @GET("exec")
-    fun getBeltTesting(
-        @Query("action") action: String = "getBeltTesting",
-        @Query("location") location: String = "",
-        @Query("className") className: String = ""
-    ): Call<List<BeltTestItem>>
+    fun getByClub(
+        @Query("action") action: String = "getByClub",
+        @Query("club") club: String
+    ): Call<List<Registration>>
 
-    @POST("exec")
-    fun saveBeltTesting(
-        @Body body: RequestBody
+    @GET("exec")
+    fun sendPendingEmails(
+        @Query("action") action: String = "sendPendingEmails"
     ): Call<ActionResponse>
 
     @GET("exec")
     fun sendBeltTestInvitations(
-        @Query("action") action: String = "sendBeltTestInvitations",
-        @Query("location") location: String = "",
-        @Query("className") className: String = ""
+        @Query("action") action: String = "sendBeltTestInvitations"
+    ): Call<ActionResponse>
+
+    @POST("exec")
+    fun updateStudentManagement(
+        @Body body: RequestBody
     ): Call<ActionResponse>
 }
