@@ -3,24 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="12dp">
 
-    <Button
-        android:id="@+id/btnLoadBeltTesting"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Load Belt Testing List" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnLoadBeltTesting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Load List" />
+
+        <Button
+            android:id="@+id/btnSaveBeltTesting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/btnSendBeltInvites"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send Invites" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listBeltTesting"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp" />
-
-    <Button
-        android:id="@+id/btnSendBeltInvites"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send Belt Test Invitations" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
 </LinearLayout>
