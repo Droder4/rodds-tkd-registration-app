@@ -38,6 +38,7 @@ class BeltTestingAdapter(
             "Class: ${item.assignedClass}\n" +
             "Current Belt: ${item.currentBelt}\n" +
             "Testing For: ${item.testingFor}\n" +
+            "Belt Test Date: ${item.beltTestDate}\n" +
             "Invite Status: ${item.beltInviteStatus}"
 
         holder.btnManageBelt.setOnClickListener {
