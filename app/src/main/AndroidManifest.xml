@@ -14,10 +14,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".BeltTestingActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".RegistrationListActivity"
             android:exported="false" />
 
@@ -31,5 +27,4 @@
         </activity>
 
     </application>
-
 </manifest>
