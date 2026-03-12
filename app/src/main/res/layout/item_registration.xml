@@ -16,17 +16,37 @@
         android:text="Student Name" />
 
     <TextView
-        android:id="@+id/tvDetails"
+        android:id="@+id/tvStudentInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="6dp"
-        android:text="Details" />
+        android:text="Info" />
 
     <TextView
-        android:id="@+id/tvEmailStatus"
+        android:id="@+id/tvStudentNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="6dp"
-        android:textStyle="italic"
-        android:text="Email Status" />
+        android:text="Notes" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnEditNotes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Edit Notes" />
+
+        <Button
+            android:id="@+id/btnMarkEmailSent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mark Email Sent" />
+    </LinearLayout>
 </LinearLayout>
