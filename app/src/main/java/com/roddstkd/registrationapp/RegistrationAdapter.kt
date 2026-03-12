@@ -3,23 +3,28 @@ package com.roddstkd.registrationapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RegistrationAdapter : RecyclerView.Adapter<RegistrationAdapter.ViewHolder>() {
+class RegistrationAdapter(
+    private val onEditNotes: (Registration) -> Unit,
+    private val onMarkEmailSent: (Registration) -> Unit
+) : RecyclerView.Adapter<RegistrationAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<Registration>()
+    private var items: List<Registration> = emptyList()
 
     fun submitList(newItems: List<Registration>) {
-        items.clear()
-        items.addAll(newItems)
+        items = newItems
         notifyDataSetChanged()
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvStudentName: TextView = view.findViewById(R.id.tvStudentName)
-        val tvDetails: TextView = view.findViewById(R.id.tvDetails)
-        val tvEmailStatus: TextView = view.findViewById(R.id.tvEmailStatus)
+        val tvName: TextView = view.findViewById(R.id.tvStudentName)
+        val tvInfo: TextView = view.findViewById(R.id.tvStudentInfo)
+        val tvNotes: TextView = view.findViewById(R.id.tvStudentNotes)
+        val btnEditNotes: Button = view.findViewById(R.id.btnEditNotes)
+        val btnMarkEmailSent: Button = view.findViewById(R.id.btnMarkEmailSent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,10 +35,14 @@ class RegistrationAdapter : RecyclerView.Adapter<RegistrationAdapter.ViewHolder>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.tvStudentName.text = item.studentName ?: ""
-        holder.tvDetails.text =
-            "Club: ${item.location}\nClass: ${item.assignedClass}\nAge: ${item.studentAge}\nParent: ${item.parentName}"
-        holder.tvEmailStatus.text = "Email: ${item.emailStatus}"
+
+        holder.tvName.text = item.studentName ?: ""
+        holder.tvInfo.text =
+            "Club: ${item.location}\nClass: ${item.assignedClass}\nEmail Status: ${item.emailStatus}\nRegistration: ${item.registrationStatus}"
+        holder.tvNotes.text = "Notes: ${item.notes ?: ""}"
+
+        holder.btnEditNotes.setOnClickListener { onEditNotes(item) }
+        holder.btnMarkEmailSent.setOnClickListener { onMarkEmailSent(item) }
     }
 
     override fun getItemCount(): Int = items.size
