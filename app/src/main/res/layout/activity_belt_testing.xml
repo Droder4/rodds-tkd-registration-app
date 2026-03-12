@@ -3,31 +3,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="16dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Belt Testing Manager"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="20dp" />
+
+    <!-- Club selector -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Club"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/spinnerBeltClub"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Class selector -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Class"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/spinnerBeltClass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:layout_marginBottom="16dp" />
 
+    <!-- Instructions -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tap Load List, then tap a student to edit belt details"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
+        android:text="1. Choose club and class\n2. Tap Load List\n3. Tap a student to edit belt details"
+        android:paddingBottom="16dp" />
 
+    <!-- Student list -->
+    <ListView
+        android:id="@+id/listBeltTesting"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:dividerHeight="8dp" />
+
+    <!-- Buttons moved to bottom -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
 
         <Button
             android:id="@+id/btnLoadBeltTesting"
@@ -49,11 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Send Invites" />
+
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listBeltTesting"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp" />
 </LinearLayout>
