@@ -28,6 +28,7 @@ data class Registration(
     val amountPaid: String? = "",
     val currentBelt: String? = "",
     val testingFor: String? = "",
+    val beltTestDate: String? = "",
     val beltInviteStatus: String? = "",
     val studentNotes: String? = ""
 )
