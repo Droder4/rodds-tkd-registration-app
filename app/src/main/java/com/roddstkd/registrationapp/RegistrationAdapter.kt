@@ -8,8 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class RegistrationAdapter(
-    private val onEditNotes: (Registration) -> Unit,
-    private val onMarkEmailSent: (Registration) -> Unit
+    private val onManageClicked: (Registration) -> Unit
 ) : RecyclerView.Adapter<RegistrationAdapter.ViewHolder>() {
 
     private var items: List<Registration> = emptyList()
@@ -22,9 +21,8 @@ class RegistrationAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName: TextView = view.findViewById(R.id.tvStudentName)
         val tvInfo: TextView = view.findViewById(R.id.tvStudentInfo)
-        val tvNotes: TextView = view.findViewById(R.id.tvStudentNotes)
-        val btnEditNotes: Button = view.findViewById(R.id.btnEditNotes)
-        val btnMarkEmailSent: Button = view.findViewById(R.id.btnMarkEmailSent)
+        val tvStatus: TextView = view.findViewById(R.id.tvStudentStatus)
+        val btnManage: Button = view.findViewById(R.id.btnManageStudent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,11 +36,19 @@ class RegistrationAdapter(
 
         holder.tvName.text = item.studentName ?: ""
         holder.tvInfo.text =
-            "Club: ${item.location}\nClass: ${item.assignedClass}\nEmail Status: ${item.emailStatus}\nRegistration: ${item.registrationStatus}"
-        holder.tvNotes.text = "Notes: ${item.notes ?: ""}"
+            "Club: ${item.location}\nClass: ${item.assignedClass}\nEmail: ${item.email}"
 
-        holder.btnEditNotes.setOnClickListener { onEditNotes(item) }
-        holder.btnMarkEmailSent.setOnClickListener { onMarkEmailSent(item) }
+        holder.tvStatus.text =
+            "Payment: ${item.paymentStatus}\n" +
+            "Amount Paid: ${item.amountPaid}\n" +
+            "Current Belt: ${item.currentBelt}\n" +
+            "Testing For: ${item.testingFor}\n" +
+            "Welcome Email: ${item.emailStatus}\n" +
+            "Belt Invite: ${item.beltInviteStatus}"
+
+        holder.btnManage.setOnClickListener {
+            onManageClicked(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size
