@@ -3,87 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <!-- Title -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Belt Testing Manager"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="20dp" />
-
-    <!-- Club selector -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Club"
-        android:textStyle="bold" />
+    android:padding="12dp">
 
     <Spinner
         android:id="@+id/spinnerBeltClub"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Class selector -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Class"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content" />
 
     <Spinner
         android:id="@+id/spinnerBeltClass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginTop="8dp" />
 
-    <!-- Instructions -->
-    <TextView
+    <Button
+        android:id="@+id/btnLoadBeltStudents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1. Choose club and class\n2. Tap Load List\n3. Tap a student to edit belt details"
-        android:paddingBottom="16dp" />
+        android:text="Load Belt Testing List"
+        android:layout_marginTop="10dp" />
 
-    <!-- Student list -->
-    <ListView
-        android:id="@+id/listBeltTesting"
+    <Button
+        android:id="@+id/btnSendBeltInvitesFromScreen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Belt Test Invites"
+        android:layout_marginTop="10dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBeltTesting"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:dividerHeight="8dp" />
-
-    <!-- Buttons moved to bottom -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp">
-
-        <Button
-            android:id="@+id/btnLoadBeltTesting"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Load List" />
-
-        <Button
-            android:id="@+id/btnSaveBeltTesting"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Save" />
-
-        <Button
-            android:id="@+id/btnSendBeltInvites"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Send Invites" />
-
-    </LinearLayout>
-
+        android:layout_marginTop="12dp" />
 </LinearLayout>
