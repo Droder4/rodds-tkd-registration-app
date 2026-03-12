@@ -15,61 +15,21 @@ interface ApiService {
     ): Call<List<Registration>>
 
     @GET("exec")
-    fun getByClub(
-        @Query("action") action: String = "getByClub",
-        @Query("club") club: String
-    ): Call<List<Registration>>
-
-    @GET("exec")
-    fun getByClass(
-        @Query("action") action: String = "getByClass",
-        @Query("className") className: String
-    ): Call<List<Registration>>
-
-    @GET("exec")
-    fun sendPendingEmails(
-        @Query("action") action: String = "sendPendingEmails"
-    ): Call<ActionResponse>
-
-    @GET("exec")
-    fun sendRegistrationCompleteEmails(
-        @Query("action") action: String = "sendRegistrationCompleteEmails"
-    ): Call<ActionResponse>
-
-    @GET("exec")
-    fun sendIncompleteRegistrationReminders(
-        @Query("action") action: String = "sendIncompleteRegistrationReminders"
-    ): Call<ActionResponse>
-
-    @GET("exec")
     fun getBeltTesting(
-        @Query("action") action: String = "getBeltTesting"
+        @Query("action") action: String = "getBeltTesting",
+        @Query("location") location: String = "",
+        @Query("className") className: String = ""
     ): Call<List<BeltTestItem>>
-
-    @GET("exec")
-    fun markWelcomeEmailSent(
-        @Query("action") action: String = "markWelcomeEmailSent",
-        @Query("email") email: String,
-        @Query("studentName") studentName: String
-    ): Call<ActionResponse>
 
     @POST("exec")
     fun saveBeltTesting(
         @Body body: RequestBody
     ): Call<ActionResponse>
 
-    @POST("exec")
-    fun updateStudentNotes(
-        @Body body: RequestBody
-    ): Call<ActionResponse>
-
-    @POST("exec")
+    @GET("exec")
     fun sendBeltTestInvitations(
-        @Body body: RequestBody
-    ): Call<ActionResponse>
-
-    @POST("exec")
-    fun sendClassReminders(
-        @Body body: RequestBody
+        @Query("action") action: String = "sendBeltTestInvitations",
+        @Query("location") location: String = "",
+        @Query("className") className: String = ""
     ): Call<ActionResponse>
 }
